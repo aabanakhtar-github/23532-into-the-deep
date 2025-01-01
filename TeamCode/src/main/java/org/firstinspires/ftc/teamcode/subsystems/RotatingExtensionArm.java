@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.subsystems.tuning.TuningRotatingExtensionArm.degreesPerTick;
 
 import static java.lang.Math.abs;
 
@@ -21,17 +20,18 @@ import java.util.List;
 /**
  * Rotating arm class
  */
+// TODO: add voltage compensation
 @Config
 public class RotatingExtensionArm extends SubsystemBase {
     private double degrees(int tick) {
-        return ((double) tick / 3.0) * degreesPerTick;
+        return 360/5980.8 * tick;
     }
 
     public static boolean tuning = true;
 
-    public static double pitchP = 0.0;
-    public static double pitchD = 0.0;
-    public static double pitchCos = 0.0;
+    public static double pitchP = -0.018;
+    public static double pitchD = -2.0;
+    public static double pitchCos = 0.014;
 
     public static double slideP = 0.0;
     public static double slideD = 0.0;
@@ -55,7 +55,6 @@ public class RotatingExtensionArm extends SubsystemBase {
         leftSlide = new CachedMotor(hwMap, "slideL");
         rightSlide = new CachedMotor(hwMap, "slideR");
         pitch = new CachedMotor(hwMap, "pitch");
-        leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
         List<CachedMotor> motors = Arrays.asList(leftSlide, rightSlide, pitch);
         motors.forEach(x -> {
             x.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -76,17 +75,22 @@ public class RotatingExtensionArm extends SubsystemBase {
         telemetry.addData("pitch pos", pitch.m.getCurrentPosition());
         telemetry.addData("pitch angle", armAngle);
         // run pid pitch
-        double pitchOutput = pitchController.calculate(targetPitchPosition, pitch.m.getCurrentPosition()) - Math.cos(Math.toRadians(armAngle)) * pitchCos;
+        double pitchOutput = pitchController.calculate(targetPitchPosition, pitch.m.getCurrentPosition()) + Math.cos(Math.toRadians(armAngle)) * pitchCos;
         pitch.setPower(pitchOutput);
         // slide pid
         double slideOutput = slideController.calculate(targetSlidePosition, rightSlide.m.getCurrentPosition()) + Math.sin(Math.toRadians(armAngle)) * slideSin;
         telemetry.addData("slide pos", rightSlide.m.getCurrentPosition());
         telemetry.addData("slide output", slideOutput);
         telemetry.addData("slide target", targetSlidePosition);
-        leftSlide.setPower(Range.clip(slideOutput, -1.0, 1.0));
-        rightSlide.setPower(Range.clip(slideOutput, -1.0, 1.0));
-        // log all data ..
-        telemetry.update();
+        if (rawPower < 0.1) {
+            leftSlide.setPower(slideOutput);
+            rightSlide.setPower(slideOutput);
+        }
+        else {
+            targetSlidePosition = getCurrentSlidePosition();
+            leftSlide.setPower(rawPower);
+            rightSlide.setPower(rawPower);
+        }
     }
 
     public void setTargetPitchPosition(double pitch) {
@@ -99,5 +103,21 @@ public class RotatingExtensionArm extends SubsystemBase {
 
     public void setRawPower(double power) {
         rawPower = power;
+    }
+
+    public double getTargetPitchPosition() {
+        return targetPitchPosition;
+    }
+
+    public double getCurrentPitchPosition() {
+        return pitch.m.getCurrentPosition();
+    }
+
+    public double getCurrentSlidePosition() {
+        return rightSlide.m.getCurrentPosition();
+    }
+
+    public double getTargetSlidePosition() {
+        return targetSlidePosition;
     }
 }

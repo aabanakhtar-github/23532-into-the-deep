@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.commands;
 
+import static java.lang.Math.abs;
+
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.RotatingExtensionArm;
@@ -21,6 +23,6 @@ public class SlideExtensionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return true;
+        return abs(subsystem.getTargetSlidePosition() - subsystem.getCurrentSlidePosition()) < 150;
     }
 }
