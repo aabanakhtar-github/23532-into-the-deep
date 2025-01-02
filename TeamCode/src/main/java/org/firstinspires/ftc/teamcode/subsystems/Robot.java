@@ -20,7 +20,7 @@ public class Robot {
         drive = new MecanumDrive(map, telemetry);
         clawArm = new ClawArm(map, telemetry);
         hubs = new Hubs(map, telemetry);
-        rotatingExtensionArm.setTargetPitchPosition(SlidePitchCommand.UP);
+        rotatingExtensionArm.setTargetPitchPosition(SlidePitchCommand.up);
         clawArm.setPreset(ClawArm.PresetSetting.INIT);
         // setup robot cleanliness tasks
         CommandScheduler.getInstance().schedule(new CacheClear(hubs));

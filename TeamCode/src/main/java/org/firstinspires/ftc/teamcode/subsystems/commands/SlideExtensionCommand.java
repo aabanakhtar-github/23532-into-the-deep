@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.RotatingExtensionArm;
 
 public class SlideExtensionCommand extends CommandBase {
     private final RotatingExtensionArm subsystem;
-    private double targetPos = 0.0;
+    private final double targetPos;
 
     public SlideExtensionCommand(RotatingExtensionArm subsystem, double targetPos) {
         addRequirements(subsystem);
@@ -18,11 +18,11 @@ public class SlideExtensionCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        subsystem.setTargetSlidePosition(targetPos);
+        RotatingExtensionArm.targetSlidePosition = targetPos;
     }
 
     @Override
     public boolean isFinished() {
-        return abs(subsystem.getTargetSlidePosition() - subsystem.getCurrentSlidePosition()) < 150;
+        return abs(targetPos - subsystem.getCurrentSlidePosition()) < 150;
     }
 }

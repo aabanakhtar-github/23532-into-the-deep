@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
@@ -11,7 +12,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.ClawArm;
+import org.firstinspires.ftc.teamcode.subsystems.CommandStatics;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.RotatingExtensionArm;
 import org.firstinspires.ftc.teamcode.subsystems.commands.ClawArmPositionCommand;
 import org.firstinspires.ftc.teamcode.subsystems.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.commands.SlideExtensionCommand;
@@ -23,6 +26,19 @@ public class Teleop extends OpMode {
     private Robot robot;
     private Layer layer = Layer.SAMPLE;
 
+    private enum Layer {
+        SAMPLE,
+        SPEC
+    }
+
+    private Command modeChange = new InstantCommand(() -> {
+        if (layer == Layer.SAMPLE) {
+            layer = Layer.SPEC;
+        } else {
+            layer = Layer.SAMPLE;
+        }
+    });
+
     @Override
     public void init() {
         robot = new Robot(hardwareMap, telemetry);
@@ -30,43 +46,21 @@ public class Teleop extends OpMode {
         GamepadEx gamepad1ex = new GamepadEx(gamepad1);
         CommandScheduler.getInstance().schedule(new DriveCommand(gamepad1ex, robot.drive));
         // layers
-        gamepad1ex.getGamepadButton(GamepadKeys.Button.START).whenPressed(() -> {
-            if (layer == Layer.SAMPLE) {
-                layer = Layer.SPEC;
-            } else {
-                layer = Layer.SAMPLE;
-            }
-        });
-        // move the pitching arm up
+        gamepad1ex.getGamepadButton(GamepadKeys.Button.START).whenPressed(modeChange);
         // spec intake / sample deposit
-        gamepad1ex.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(new SequentialCommandGroup(
-                new SlideExtensionCommand(robot.rotatingExtensionArm, -200),
-                new InstantCommand(() -> robot.rotatingExtensionArm.setRawPower(0.0)),
-                new SlidePitchCommand(robot.rotatingExtensionArm, SlidePitchCommand.UP),
-                new InstantCommand(() -> robot.clawArm.setPreset(ClawArm.PresetSetting.DEPOSIT)),
-                new SlideExtensionCommand(robot.rotatingExtensionArm, 0)
-        ));
-        // intermediate positioning for samples TODO
+        gamepad1ex.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(CommandStatics.depositModeCommand(robot));
         // intaking for samples
-        gamepad1ex.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(new SequentialCommandGroup(
-                new InstantCommand(() -> robot.rotatingExtensionArm.setRawPower(0.0)),
-                new SlideExtensionCommand(robot.rotatingExtensionArm, -200),
-                new ClawArmPositionCommand(robot.clawArm, ClawArm.PresetSetting.INTAKE),
-                new SlidePitchCommand(robot.rotatingExtensionArm, SlidePitchCommand.DOWN),
-                new SlideExtensionCommand(robot.rotatingExtensionArm, -1000)
-        ));
+        gamepad1ex.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(CommandStatics.intakeModeCommand(robot));
+        // change claw angle
         gamepad1ex.getGamepadButton(GamepadKeys.Button.X).whenPressed(() ->{ ClawArm.otherAngle = !ClawArm.otherAngle; });
         // open close claw
         gamepad1ex.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> {
-                robot.clawArm.claw.setPosition(0);
+                robot.clawArm.claw.setPosition(0.1);
         }).whenInactive(() -> robot.clawArm.claw.setPosition(0.8));
         // intake aiming
         gamepad1ex.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
-                new ParallelCommandGroup(
-                        new ClawArmPositionCommand(robot.clawArm, ClawArm.PresetSetting.INTAKE_PRE)
-                )
+                new ClawArmPositionCommand(robot.clawArm, ClawArm.PresetSetting.INTAKE_PRE)
         ).whenInactive(new ClawArmPositionCommand(robot.clawArm, ClawArm.PresetSetting.INTAKE));
-        gamepad1ex.getGamepadButton(GamepadKeys.Button.Y).whenPressed(new SlideExtensionCommand(robot.rotatingExtensionArm, -3000));
     }
 
     @Override
@@ -77,10 +71,5 @@ public class Teleop extends OpMode {
     @Override
     public void loop() {
         robot.periodic();
-    }
-
-    private enum Layer {
-        SAMPLE,
-        SPEC
     }
 }
