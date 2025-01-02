@@ -29,13 +29,14 @@ public class RotatingExtensionArm extends SubsystemBase {
 
     public static boolean tuning = true;
 
-    public static double pitchP = -0.018;
-    public static double pitchD = -2.0;
-    public static double pitchCos = 0.014;
+    public static double pitchP = -0.005;
+    public static double pitchD = 0;
+    public static double pitchCos = 0.016;
 
-    public static double slideP = 0.0;
+    public static double slideP = -0.01;
     public static double slideD = 0.0;
     public static double slideSin = 0.0;
+    public static double slideE = 0.1;
 
     public static double targetPitchPosition = 0.0;
     public static double targetSlidePosition = 0.0;
@@ -49,6 +50,8 @@ public class RotatingExtensionArm extends SubsystemBase {
     private final PIDController pitchController = new PIDController(pitchP, 0.0, pitchD);
 
     private final Telemetry telemetry;
+
+    private double maxExtension = 3150;
 
     public RotatingExtensionArm(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -69,13 +72,13 @@ public class RotatingExtensionArm extends SubsystemBase {
             pitchController.setPID(pitchP, 0.0, pitchD);
         }
         // determine constants
-        double armAngle = abs(degrees(pitch.m.getCurrentPosition()));
+        double armAngle = 123 - abs(degrees(pitch.m.getCurrentPosition()));
         // log some data ...
         telemetry.addData("slide pos", rightSlide.m.getCurrentPosition());
         telemetry.addData("pitch pos", pitch.m.getCurrentPosition());
         telemetry.addData("pitch angle", armAngle);
         // run pid pitch
-        double pitchOutput = pitchController.calculate(targetPitchPosition, pitch.m.getCurrentPosition()) + Math.cos(Math.toRadians(armAngle)) * pitchCos;
+        double pitchOutput = pitchController.calculate(targetPitchPosition, pitch.m.getCurrentPosition()) + Math.cos(Math.toRadians(armAngle)) * pitchCos +  slideE * getExtensionRate();
         pitch.setPower(pitchOutput);
         // slide pid
         double slideOutput = slideController.calculate(targetSlidePosition, rightSlide.m.getCurrentPosition()) + Math.sin(Math.toRadians(armAngle)) * slideSin;
@@ -119,5 +122,9 @@ public class RotatingExtensionArm extends SubsystemBase {
 
     public double getTargetSlidePosition() {
         return targetSlidePosition;
+    }
+
+    private double getExtensionRate() {
+        return abs(getCurrentSlidePosition()) / maxExtension;
     }
 }

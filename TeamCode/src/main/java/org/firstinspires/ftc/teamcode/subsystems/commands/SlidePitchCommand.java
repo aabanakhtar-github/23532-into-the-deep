@@ -2,16 +2,18 @@ package org.firstinspires.ftc.teamcode.subsystems.commands;
 
 import static java.lang.Math.abs;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.RotatingExtensionArm;
 
+@Config
 public class SlidePitchCommand extends CommandBase {
     private RotatingExtensionArm subsystem;
     private double targetPos = 0.0;
 
-    public static double UP = 1600.0;
-    public static double DOWN = 250.0;
+    public static double UP = -400.0;
+    public static double DOWN = -1600.0;
 
     public SlidePitchCommand(RotatingExtensionArm subsystem, double targetPos) {
         addRequirements(subsystem);
