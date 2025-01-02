@@ -14,10 +14,10 @@ public class Robot {
     public Hubs hubs;
     private final Telemetry telemetry;
 
-    public Robot(HardwareMap map, Telemetry telemetry) {
+    public Robot(HardwareMap map, Telemetry telemetry, boolean auto) {
         this.telemetry = telemetry;
         rotatingExtensionArm = new RotatingExtensionArm(map, telemetry);
-        drive = new MecanumDrive(map, telemetry);
+        drive = auto ? null : new MecanumDrive(map, telemetry);
         clawArm = new ClawArm(map, telemetry);
         hubs = new Hubs(map, telemetry);
         rotatingExtensionArm.setTargetPitchPosition(SlidePitchCommand.up);

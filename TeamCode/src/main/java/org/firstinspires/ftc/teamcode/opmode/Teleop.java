@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.subsystems.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.subsystems.commands.SlideExtensionCommand;
 import org.firstinspires.ftc.teamcode.subsystems.commands.SlidePitchCommand;
 
-@TeleOp(name = "\uD83C\uDFAE TELEOP BOOM BOOM")
+@TeleOp(name = "\uD83C\uDFAE TELEOP BOOM BOOM", group = "Final OpModes")
 @Config
 public class Teleop extends OpMode {
     private Robot robot;
@@ -31,7 +31,7 @@ public class Teleop extends OpMode {
         SPEC
     }
 
-    private Command modeChange = new InstantCommand(() -> {
+    private final Command modeChange = new InstantCommand(() -> {
         if (layer == Layer.SAMPLE) {
             layer = Layer.SPEC;
         } else {
@@ -41,7 +41,7 @@ public class Teleop extends OpMode {
 
     @Override
     public void init() {
-        robot = new Robot(hardwareMap, telemetry);
+        robot = new Robot(hardwareMap, telemetry, false);
         // setup bindings
         GamepadEx gamepad1ex = new GamepadEx(gamepad1);
         CommandScheduler.getInstance().schedule(new DriveCommand(gamepad1ex, robot.drive));
