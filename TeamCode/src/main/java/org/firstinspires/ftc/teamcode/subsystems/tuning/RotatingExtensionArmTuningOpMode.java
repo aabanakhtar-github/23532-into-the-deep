@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.subsystems.RotatingExtensionArm;
 
 @Config
-@TeleOp(name = "RotatingExtensionArm Tuning", group = "Tuning")
+@TeleOp(name = "RotatingExtensionArm Tuning")
 public class RotatingExtensionArmTuningOpMode extends OpMode {
 
     private RotatingExtensionArm rotatingExtensionArm;
@@ -25,9 +25,9 @@ public class RotatingExtensionArmTuningOpMode extends OpMode {
     @Override
     public void loop() {
         // Update target positions and raw power from FTC Dashboard values
-        rotatingExtensionArm.setTargetPitchPosition(targetPitchPosition);
-        rotatingExtensionArm.setTargetSlidePosition(targetSlidePosition);
-        rotatingExtensionArm.setRawPower(rawPower);
+        RotatingExtensionArm.targetPitchPosition = targetPitchPosition;
+        RotatingExtensionArm.targetSlidePosition = targetSlidePosition;
+        RotatingExtensionArm.rawPower =  rawPower;
 
         // Update the subsystem to use the latest settings
         rotatingExtensionArm.periodic();

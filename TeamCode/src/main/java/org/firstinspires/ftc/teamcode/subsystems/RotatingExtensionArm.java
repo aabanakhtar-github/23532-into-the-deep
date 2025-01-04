@@ -34,11 +34,11 @@ public class RotatingExtensionArm extends SubsystemBase {
 
     public static boolean tuning = true;
 
-    public static double pitchP = -0.005;
-    public static double pitchD = 0;
-    public static double pitchCos = 0.016;
+    public static double pitchP = -0.025;
+    public static double pitchD = 0.2;
+    public static double pitchCos = 0.2;
 
-    public static double slideP = -0.01;
+    public static double slideP = -0.015;
     public static double slideD = 0.0;
     public static double slideSin = 0.0;
     public static double slideE = 0.13;
@@ -81,7 +81,7 @@ public class RotatingExtensionArm extends SubsystemBase {
         // arm offset at 123
         double armAngle = armStartAngle - abs(degrees(pitch.m.getCurrentPosition()));
         // run pid pitch
-        if (pitchState != PitchState.RELAXED) {
+        if (true) {
             double pitchOutput = pitchController.calculate(targetPitchPosition, pitch.m.getCurrentPosition()) + Math.cos(Math.toRadians(armAngle)) * pitchCos +  slideE * getExtensionRate();
             pitch.setPower(pitchOutput);
         } else {
@@ -89,7 +89,7 @@ public class RotatingExtensionArm extends SubsystemBase {
         }
         // slide pid
         double slideOutput = slideController.calculate(targetSlidePosition, rightSlide.m.getCurrentPosition()) + Math.sin(Math.toRadians(armAngle)) * slideSin;
-        if (rawPower < 0.1) {
+        if (-0.1 < rawPower && rawPower < 0.1) {
             leftSlide.setPower(slideOutput);
             rightSlide.setPower(slideOutput);
         }
@@ -120,6 +120,6 @@ public class RotatingExtensionArm extends SubsystemBase {
         telemetry.addData("slide target", targetSlidePosition);
         telemetry.addData("slide pos", rightSlide.m.getCurrentPosition());
         telemetry.addData("pitch pos", pitch.m.getCurrentPosition());
-        telemetry.addData("pitch angle", degrees(getCurrentPitchPosition());
+        telemetry.addData("pitch angle", degrees(getCurrentPitchPosition()));
     }
 }

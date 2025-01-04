@@ -20,12 +20,10 @@ public class Robot {
         drive = auto ? null : new MecanumDrive(map, telemetry);
         clawArm = new ClawArm(map, telemetry);
         hubs = new Hubs(map, telemetry);
-        rotatingExtensionArm.setTargetPitchPosition(SlidePitchCommand.up);
+        RotatingExtensionArm.targetPitchPosition = SlidePitchCommand.up;
         clawArm.setPreset(ClawArm.PresetSetting.INIT);
-        // setup robot cleanliness tasks
         CommandScheduler.getInstance().schedule(new CacheClear(hubs));
-        // TODO: add logger
-        //CommandScheduler.getInstance().schedule(new LoggerCommand());
+
     }
 
     public void periodic() {

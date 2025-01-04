@@ -19,7 +19,7 @@ public class ClawArm extends SubsystemBase {
     public static PresetConfig initConfig = new PresetConfig(1.0, 1.0, 0.65);
     public static PresetConfig intakeConfig = new PresetConfig(0.2, 0.0, 0.65);
     public static PresetConfig preIntakeConfig = new PresetConfig(0.45, 0.0, 0.65);
-    public static PresetConfig outtakeConfig = new PresetConfig(0.2, 0.8, 0.65);
+    public static PresetConfig outtakeConfig = new PresetConfig(0.35, 0.8, 0.7);
     public static double secondClawAngle = 0.25;
     public static boolean otherAngle = false;
 
@@ -51,6 +51,7 @@ public class ClawArm extends SubsystemBase {
         claw = new CachedServo(hwmap, "claw");
         leftArmPivot.setDirection(Servo.Direction.REVERSE);
         this.telemetry = telemetry;
+        otherAngle = false;
     }
 
 

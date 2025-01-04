@@ -34,7 +34,7 @@ public class CommandStatics {
                 new SlideExtensionCommand(robot.rotatingExtensionArm, -200),
                 new ClawArmPositionCommand(robot.clawArm, ClawArm.PresetSetting.INTAKE),
                 new SlidePitchCommand(robot.rotatingExtensionArm, SlidePitchCommand.down),
-                new SlideExtensionCommand(robot.rotatingExtensionArm, -1000)
+                new SlideExtensionCommand(robot.rotatingExtensionArm, -500)
         );
     }
 }

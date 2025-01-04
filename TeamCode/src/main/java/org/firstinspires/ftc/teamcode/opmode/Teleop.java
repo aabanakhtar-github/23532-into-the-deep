@@ -52,11 +52,22 @@ public class Teleop extends OpMode {
         // intaking for samples
         gamepad1ex.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(CommandStatics.intakeModeCommand(robot));
         // change claw angle
-        gamepad1ex.getGamepadButton(GamepadKeys.Button.X).whenPressed(() ->{ ClawArm.otherAngle = !ClawArm.otherAngle; });
+        gamepad1ex.getGamepadButton(GamepadKeys.Button.X).whenPressed(() -> { ClawArm.otherAngle = !ClawArm.otherAngle; });
         // open close claw
         gamepad1ex.getGamepadButton(GamepadKeys.Button.B).whenPressed(() -> {
                 robot.clawArm.claw.setPosition(0.1);
         }).whenInactive(() -> robot.clawArm.claw.setPosition(0.8));
+
+        gamepad1ex.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> {
+          robot.rotatingExtensionArm.rawPower = 1.0;
+        }).whenReleased(() -> {
+            robot.rotatingExtensionArm.rawPower = 0.0;
+        });
+        gamepad1ex.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(() -> {
+            robot.rotatingExtensionArm.rawPower = -1.0;
+        }).whenReleased(() -> {
+            robot.rotatingExtensionArm.rawPower = 0.0;
+        });
         // intake aiming
         gamepad1ex.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(
                 new ClawArmPositionCommand(robot.clawArm, ClawArm.PresetSetting.INTAKE_PRE)
