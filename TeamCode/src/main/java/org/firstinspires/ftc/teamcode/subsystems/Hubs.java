@@ -26,4 +26,8 @@ public class Hubs extends SubsystemBase {
         modules.forEach(LynxModule::clearBulkCache);
         telemetry.addData("LOOP TIME (hz): ", 1.0 / timer.seconds());
     }
+
+    public static class Configs {
+
+    }
 }

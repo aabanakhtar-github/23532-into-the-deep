@@ -25,10 +25,6 @@ public class RotatingExtensionArmTuningOpMode extends OpMode {
     @Override
     public void loop() {
         // Update target positions and raw power from FTC Dashboard values
-        RotatingExtensionArm.targetPitchPosition = targetPitchPosition;
-        RotatingExtensionArm.targetSlidePosition = targetSlidePosition;
-        RotatingExtensionArm.rawPower =  rawPower;
-
         // Update the subsystem to use the latest settings
         rotatingExtensionArm.periodic();
 

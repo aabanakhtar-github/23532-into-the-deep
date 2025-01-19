@@ -17,12 +17,12 @@ public class SlideExtensionCommand extends CommandBase {
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         RotatingExtensionArm.targetSlidePosition = targetPos;
     }
 
     @Override
     public boolean isFinished() {
-        return abs(targetPos - subsystem.getCurrentSlidePosition()) < 150;
+        return abs(targetPos - subsystem.getCurrentSlidePosition()) < 200;
     }
 }

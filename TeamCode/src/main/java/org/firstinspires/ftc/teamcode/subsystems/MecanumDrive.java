@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -8,25 +12,17 @@ import org.firstinspires.ftc.teamcode.wrapper.CachedMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class MecanumDrive extends SubsystemBase {
-    private final CachedMotor leftFront;
-    private final CachedMotor leftBack;
-    private final CachedMotor rightFront;
-    private final CachedMotor rightBack;
+import java.util.Arrays;
+import java.util.List;
 
+public class MecanumDrive extends SubsystemBase {
+    private org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive drive;
     private final Telemetry telemetry;
 
     // Constructor to initialize motors with HardwareMap and telemetry
-    public MecanumDrive(HardwareMap hardwareMap, Telemetry telemetry) {
+    public MecanumDrive(HardwareMap hardwareMap, Telemetry telemetry, Pose2d pose) {
         this.telemetry = telemetry;
-        leftFront = new CachedMotor(hardwareMap, "leftFront");
-        rightFront = new CachedMotor(hardwareMap, "rightFront");
-        rightBack = new CachedMotor(hardwareMap, "rightBack");
-        leftBack = new CachedMotor(hardwareMap, "leftBack");
-
-        // Reverse the direction of the backward motors
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        drive = new org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive(hardwareMap, pose);
     }
 
     /**
@@ -39,18 +35,21 @@ public class MecanumDrive extends SubsystemBase {
     public void drive(double x, double y, double rotation, double speedMultiplier) {
         // Invert y for correct forward/backward control
         y = -y;
-
-        // Calculate motor powers
-        double leftFrontPower = y + x + rotation;
-        double leftBackPower = y - x + rotation;
-        double rightFrontPower = y - x - rotation;
-        double rightBackPower = y + x - rotation;
-
-        // Set motor powers
-        leftFront.setPower(leftFrontPower);
-        leftBack.setPower(leftBackPower);
-        rightFront.setPower(rightFrontPower);
-        rightBack.setPower(rightBackPower);
+        drive.setDrivePowers(new PoseVelocity2d(
+                new Vector2d(x, y),
+                rotation
+        ));
     }
 
+    public TrajectoryActionBuilder actionBuilder(Pose2d startPose) {
+        return drive.actionBuilder(startPose);
+    }
+
+    public Pose2d getPose() {
+        return drive.localizer.getPose();
+    }
+
+    @Override
+    public void periodic() {
+    }
 }

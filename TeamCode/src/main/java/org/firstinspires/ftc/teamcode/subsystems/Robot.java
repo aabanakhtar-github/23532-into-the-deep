@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -14,16 +15,22 @@ public class Robot {
     public Hubs hubs;
     private final Telemetry telemetry;
 
-    public Robot(HardwareMap map, Telemetry telemetry, boolean auto) {
+    public Robot(HardwareMap map, Telemetry telemetry, boolean auto, Pose2d pose) {
         this.telemetry = telemetry;
         rotatingExtensionArm = new RotatingExtensionArm(map, telemetry);
-        drive = auto ? null : new MecanumDrive(map, telemetry);
+        drive = auto ? null : new MecanumDrive(map, telemetry, pose);
         clawArm = new ClawArm(map, telemetry);
         hubs = new Hubs(map, telemetry);
-        RotatingExtensionArm.targetPitchPosition = SlidePitchCommand.up;
-        clawArm.setPreset(ClawArm.PresetSetting.INIT);
+        // setup
+        reset();
         CommandScheduler.getInstance().schedule(new CacheClear(hubs));
+    }
 
+    public void reset() {
+        RotatingExtensionArm.targetPitchPosition = 0;
+        RotatingExtensionArm.targetSlidePosition = 0;
+        clawArm.setPreset(ClawArm.PresetSetting.INIT);
+        clawArm.claw.setPosition(0.0);
     }
 
     public void periodic() {

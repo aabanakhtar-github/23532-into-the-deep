@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name = "Raw Slide Test")
 public class RawSlideTest extends OpMode {
@@ -17,6 +18,7 @@ public class RawSlideTest extends OpMode {
         right = hardwareMap.get(DcMotorEx.class, "slideR");
         left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        left.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override

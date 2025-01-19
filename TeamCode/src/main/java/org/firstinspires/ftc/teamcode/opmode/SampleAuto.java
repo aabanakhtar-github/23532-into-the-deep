@@ -1,46 +1,66 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
+import android.transition.Slide;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.Subsystem;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
-import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
-import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierLine;
-import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
-import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
+import org.firstinspires.ftc.teamcode.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Robot;
-import org.firstinspires.ftc.teamcode.subsystems.commands.FollowBezierCommand;
+import org.firstinspires.ftc.teamcode.subsystems.RotatingExtensionArm;
+import org.firstinspires.ftc.teamcode.subsystems.commands.ForceClawOpenCommand;
+import org.firstinspires.ftc.teamcode.subsystems.commands.SlideExtensionCommand;
+import org.firstinspires.ftc.teamcode.subsystems.commands.SlidePitchCommand;
+import org.firstinspires.ftc.teamcode.wrapper.ActionCommand;
 
-@Autonomous(name = "Sample Auto 0+3")
+import java.util.HashSet;
+import java.util.Set;
+
+@Config
+@Autonomous(name = "SAMPLE AUTONOMOUS", group = "autos")
 public class SampleAuto extends OpMode {
-    private Robot robot;
-    private Follower drive;
-
-    public static Pose startPose = new Pose(8.223776223776223, 87.44055944055943, Math.toRadians(0));
-    public static Pose scorePose = new Pose(13.594405594405593, 125.7062937062937, Math.toRadians(-45));
-    public static Pose sample0Pose = new Pose(30, 120.16783216783216, Math.toRadians(0));
-    public static Pose sample1Pose = new Pose(30, 132, Math.toRadians(0));
-    public static BezierCurve ascentBezier = new BezierCurve(
-            new Point(scorePose.getX(), scorePose.getY(), Point.CARTESIAN),
-            new Point(67.133, 132.420, Point.CARTESIAN),
-            new Point(67.133, 97.343, Point.CARTESIAN)
-    );
-
-    Path scorePreload, scoreSample0, scoreSample1, ascent;
+    Robot roboNemo;
 
     @Override
     public void init() {
-       robot = new Robot(hardwareMap, telemetry, true);
-       drive = new Follower(hardwareMap);
-       scorePreload = new Path(new BezierLine(new Point(startPose), new Point(scorePose)));
-       CommandScheduler.getInstance().schedule(new FollowBezierCommand(drive, scorePreload));
+        roboNemo = new Robot(hardwareMap, telemetry, false, new Pose2d(-38.67, -63, 0));
+        roboNemo.rotatingExtensionArm.setConfig(true);
+
+        TrajectoryActionBuilder followtraj = roboNemo.drive.actionBuilder(roboNemo.drive.getPose())
+                .strafeToLinearHeading(new Vector2d(-55, -55), Math.PI/4);
+                //.strafeToLinearHeading(new Vector2d(-48, -43), Math.PI/2)
+                //.strafeToLinearHeading(new Vector2d(-55, -55), Math.PI/4)
+                //.strafeToLinearHeading(new Vector2d(-58, -43), Math.PI/2)
+                //.strafeToLinearHeading(new Vector2d(-55, -55), Math.PI/4);;
+        HashSet<Subsystem> actionRequirements = new HashSet<>();
+        actionRequirements.add(roboNemo.drive);
+
+        roboNemo.clawArm.claw.setPosition(0);
+
+        CommandScheduler.getInstance().schedule(
+                new ActionCommand(followtraj.build(), actionRequirements),
+                new ForceClawOpenCommand(roboNemo.clawArm, 0.8)
+        );
+    }
+
+    @Override
+    public void init_loop() {
+        roboNemo.rotatingExtensionArm.periodic();
+        roboNemo.clawArm.periodic();
     }
 
     @Override
     public void loop() {
-        drive.update();
-        CommandScheduler.getInstance().run();
+        roboNemo.periodic();
     }
+
 }

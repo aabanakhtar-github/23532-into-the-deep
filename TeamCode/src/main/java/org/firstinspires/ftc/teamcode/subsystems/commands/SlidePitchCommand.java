@@ -14,8 +14,8 @@ public class SlidePitchCommand extends CommandBase {
     private RotatingExtensionArm subsystem;
     private double targetPos = 0.0;
 
-    public static double up = -500.0;
-    public static double down = -1700.0;
+    public static double up = 75;
+    public static double down = -1150.0;
 
     public SlidePitchCommand(RotatingExtensionArm subsystem, double targetPos) {
         addRequirements(subsystem);

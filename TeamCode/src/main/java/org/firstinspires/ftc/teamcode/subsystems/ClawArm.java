@@ -17,11 +17,11 @@ public class ClawArm extends SubsystemBase {
     public static double initClawPos = 1.0;
     public static double initClawAngle = 0.65;
     public static PresetConfig initConfig = new PresetConfig(1.0, 1.0, 0.65);
-    public static PresetConfig intakeConfig = new PresetConfig(0.2, 0.0, 0.65);
-    public static PresetConfig preIntakeConfig = new PresetConfig(0.45, 0.0, 0.65);
-    public static PresetConfig outtakeConfig = new PresetConfig(0.35, 0.8, 0.7);
+    public static PresetConfig intakeConfig = new PresetConfig(0.33, 1.0, 0.65);
+    public static PresetConfig preIntakeConfig = new PresetConfig(0.6, 1, 0.65);
+    public static PresetConfig outtakeConfig = new PresetConfig(0.45, 0.3, 0.7);
     public static double secondClawAngle = 0.25;
-    public static boolean otherAngle = false;
+    public boolean otherAngle = false;
 
     public static enum PresetSetting {
         INIT,

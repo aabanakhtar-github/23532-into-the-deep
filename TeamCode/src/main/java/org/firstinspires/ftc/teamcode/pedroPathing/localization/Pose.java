@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.pedroPathing.localization;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Vector;
 
@@ -14,10 +16,11 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Vector;
  * @author Anyi Lin - 10158 Scott's Bots
  * @version 1.0, 4/2/2024
  */
+@Config
 public class Pose {
-    private double x;
-    private double y;
-    private double heading;
+    public double x;
+    public double y;
+    public double heading;
 
     /**
      * This creates a new Pose from a x, y, and heading inputs.
