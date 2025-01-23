@@ -23,6 +23,6 @@ public class SlideExtensionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return abs(targetPos - subsystem.getCurrentSlidePosition()) < 200;
+        return abs(targetPos - subsystem.getCurrentSlidePosition()) < 60;
     }
 }

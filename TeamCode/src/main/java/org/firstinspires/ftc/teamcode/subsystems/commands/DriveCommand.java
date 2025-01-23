@@ -17,7 +17,7 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        subsystem.drive(-gamepad.getLeftX(), gamepad.getLeftY(), -gamepad.getRightX(),
+        subsystem.drive(-gamepad.getLeftX() * 0.8, gamepad.getLeftY() * 0.8, -gamepad.getRightX() * 0.8,
                 1.0);
     }
 }

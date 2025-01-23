@@ -27,7 +27,7 @@ public class Robot {
     }
 
     public void reset() {
-        RotatingExtensionArm.targetPitchPosition = 0;
+        RotatingExtensionArm.targetPitchPosition = 75;
         RotatingExtensionArm.targetSlidePosition = 0;
         clawArm.setPreset(ClawArm.PresetSetting.INIT);
         clawArm.claw.setPosition(0.0);

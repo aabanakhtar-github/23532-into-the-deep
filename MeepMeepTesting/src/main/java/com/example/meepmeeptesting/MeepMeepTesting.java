@@ -19,10 +19,8 @@ public class MeepMeepTesting {
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38.67, -63, 0))
                         .strafeToLinearHeading(new Vector2d(-55, -55), Math.PI/4)
-                        .strafeToLinearHeading(new Vector2d(-48, -43), Math.PI/2)
-                        .strafeToLinearHeading(new Vector2d(-55, -55), Math.PI/4)
-                        .strafeToLinearHeading(new Vector2d(-58, -43), Math.PI/2)
-                        .strafeToLinearHeading(new Vector2d(-55, -55), Math.PI/4)
+                        .strafeTo(new Vector2d(-52, -24))
+                        .splineToLinearHeading(new Pose2d(-24, 0, Math.PI), Math.PI/2)
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)

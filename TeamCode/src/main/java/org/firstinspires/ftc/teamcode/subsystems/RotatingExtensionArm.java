@@ -51,8 +51,8 @@ public class RotatingExtensionArm extends SubsystemBase {
     private final CachedMotor rightSlide;
     private final CachedMotor pitch;
 
-    private final PIDController slideController = new PIDController(slideP, 0.0, slideD);
-    private final PIDController pitchController = new PIDController(pitchP, 0.0, pitchD);
+    private final PIDController slideController = new PIDController(pitchP, 0.0, slideD);
+    private final PIDController pitchController = new PIDController(0.0, 0.0, pitchD);
 
     private final Telemetry telemetry;
 
@@ -69,6 +69,7 @@ public class RotatingExtensionArm extends SubsystemBase {
         motors.forEach(x -> {
             x.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             x.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         });
         leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
     }
@@ -85,8 +86,11 @@ public class RotatingExtensionArm extends SubsystemBase {
         double pitchOutput = pitchController.calculate(targetPitchPosition, pitch.m.getCurrentPosition()) + Math.cos(Math.toRadians(armAngle)) * pitchCos +  slideE * getExtensionRate();
         pitch.setPower(pitchOutput);
         telemetry.addData("pitch output on pid!", pitchOutput);
-        // slide pid
-        double slideOutput = slideController.calculate(targetSlidePosition, rightSlide.m.getCurrentPosition()) + Math.sin(Math.toRadians(armAngle)) * slideSin;
+        // slide squid
+        double error = targetSlidePosition - getCurrentSlidePosition();
+        double sign = Math.signum(error);
+        double squid = sign * Math.sqrt(slideP * Math.abs(error));
+        double slideOutput = squid + slideController.calculate(targetSlidePosition, rightSlide.m.getCurrentPosition()) + Math.sin(Math.toRadians(armAngle)) * slideSin;
         if (-0.1 < rawPower && rawPower < 0.1) {
             leftSlide.setPower(slideOutput);
             rightSlide.setPower(slideOutput);

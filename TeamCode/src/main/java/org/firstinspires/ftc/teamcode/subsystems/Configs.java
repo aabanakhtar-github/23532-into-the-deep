@@ -18,7 +18,7 @@ public class Configs {
         public static double pitchD = 0.2;
         public static double pitchCos = 0.2;
 
-        public static double slideP = 0.01;
+        public static double slideP = 0.02;
         public static double slideD = 0.01;
         public static double slideSin = 0.0;
         public static double slideE = 0.13;

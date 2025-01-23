@@ -17,9 +17,12 @@ public class ClawArm extends SubsystemBase {
     public static double initClawPos = 1.0;
     public static double initClawAngle = 0.65;
     public static PresetConfig initConfig = new PresetConfig(1.0, 1.0, 0.65);
-    public static PresetConfig intakeConfig = new PresetConfig(0.33, 1.0, 0.65);
-    public static PresetConfig preIntakeConfig = new PresetConfig(0.6, 1, 0.65);
-    public static PresetConfig outtakeConfig = new PresetConfig(0.45, 0.3, 0.7);
+    public static PresetConfig intakeConfig = new PresetConfig(0.25, 1.0, 0.65);
+    public static PresetConfig preIntakeConfig = new PresetConfig(0.55, 1, 0.65);
+    public static PresetConfig outtakeConfig = new PresetConfig(0.3, 0.3, 0.7);
+    public static PresetConfig specDepositConfig2 = new PresetConfig(0.2, 0.55, 0.65);
+    public static PresetConfig specDepositConfig = new PresetConfig(0.3, 0.55, 0.65);
+
     public static double secondClawAngle = 0.25;
     public boolean otherAngle = false;
 
@@ -28,6 +31,7 @@ public class ClawArm extends SubsystemBase {
         INTAKE,
         INTAKE_PRE,
         DEPOSIT,
+        SPEC_DEPOSIT_2, SPEC_DEPOSIT
     }
 
     public static class PresetConfig {
@@ -85,6 +89,12 @@ public class ClawArm extends SubsystemBase {
                 break;
             case INTAKE_PRE:
                 acceptPreset(preIntakeConfig, otherAngle);
+                break;
+            case SPEC_DEPOSIT:
+                acceptPreset(specDepositConfig, false);
+                break;
+            case SPEC_DEPOSIT_2:
+                acceptPreset(specDepositConfig2, false);
                 break;
         }
     }

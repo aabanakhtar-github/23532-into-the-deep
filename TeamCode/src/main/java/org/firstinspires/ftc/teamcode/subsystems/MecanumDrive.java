@@ -34,9 +34,8 @@ public class MecanumDrive extends SubsystemBase {
      */
     public void drive(double x, double y, double rotation, double speedMultiplier) {
         // Invert y for correct forward/backward control
-        y = -y;
         drive.setDrivePowers(new PoseVelocity2d(
-                new Vector2d(x, y),
+                new Vector2d(y, x),
                 rotation
         ));
     }
@@ -51,5 +50,6 @@ public class MecanumDrive extends SubsystemBase {
 
     @Override
     public void periodic() {
+        drive.localizer.update();
     }
 }
